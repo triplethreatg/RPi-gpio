@@ -56,32 +56,43 @@ void init_uart()
 	SET_GPIO_ALT(RXD_PIN, 5);
 
 	// Disable mini UART
-	// AUX_ENABLES &= ~(AUX_ENABLES_MU);
+	AUX_ENABLES |= (AUX_ENABLES_MU);
+
+	// DLAB
+	AUX_MU_LCR_REG &= ~(AUX_MU_LCR_REG_LAB);
+
+	// TX LOW
+	AUX_MU_LCR_REG |= AUX_MU_LCR_REG_BK;
 
 	// Disable UART interrupts
 	AUX_MU_CNTL_REG &= ~(AUX_MU_CNTL_REG_TXD);
 	AUX_MU_CNTL_REG &= ~(AUX_MU_CNTL_REG_RXD);
 
 	// UART RXD line high
-	AUX_MU_MCR_REG &= ~(AUX_MU_MCR_REG_RTS);
+	//AUX_MU_MCR_REG &= ~(AUX_MU_MCR_REG_RTS);
 
 	// Clear FIFO
 	AUX_MU_IER_REG |= (0x03 * AUX_MU_IER_REG_ID);
 
+	// Ignore CTS
+	AUX_MU_CNTL_REG &= ~(AUX_MU_CNTL_REG_TXCTS);
+
 	// Enable UART Transmissions
 	AUX_MU_CNTL_REG |= AUX_MU_CNTL_REG_TXD;
-        AUX_MU_CNTL_REG |= AUX_MU_CNTL_REG_RXD;
+        //AUX_MU_CNTL_REG |= AUX_MU_CNTL_REG_RXD;
 
 	// Enable UART
-	AUX_ENABLES |= AUX_ENABLES_MU;
+	//AUX_ENABLES |= AUX_ENABLES_MU;
 }
 
 // Transmit a character string of ASCII hex numbers
 void transmit(char * txd_data)
 {
+	printf("Enter into transmit method\n");
 	for(x = 0; x < 7; x++)
 	{
 		while(!(AUX_MU_LSR_REG & AUX_MU_LSR_REG_EMT));
+		printf("Passed transmit interrupt");
 		AUX_MU_IO_REG = txd_data[x];
 	}
 }

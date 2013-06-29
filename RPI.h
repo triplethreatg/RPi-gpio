@@ -51,9 +51,13 @@
 #define AUX_MU_IER_REG_ID		(1 << 1)		// 2 bit interrupt R/W (pg. 13)
 #define AUX_MU_IER_REG_IP		(1 << 0)		// clear when interrupt is pending
 #define AUX_MU_LCR_REG_DS		(1 << 0)		// clear UART 7-bit mode; set UART 8-bit mode
+#define AUX_MU_LCR_REG_BK		(1 << 7)		// DLAB access
+#define AUX_MU_LCR_REG_LAB		(1 << 6)		// Pull TX line low
 #define AUX_MU_MCR_REG_RTS		(1 << 1)		// clear UART1_RTS1 line high; set UART1_RTS line low
 #define AUX_MU_LSR_REG_EMT		(1 << 5)		// set if transmit FIFO can accept one byte
 #define AUX_MU_LSR_REG_DR		(1 << 0)		// set if recieve FIFO holds symbol
+#define AUX_MU_CNTL_REG_CTS		(1 << 7)		// auto flow control; set level low; clear level high
+#define AUX_MU_CNTL_REG_TXCTS		(1 << 3)		// set, stop when CTS deasserted; clear, ignore CTS
 #define AUX_MU_CNTL_REG_TXD		(1 << 1)		// set MU transmit enabled; clear MU transmitter disabled
 #define AUX_MU_CNTL_REG_RXD		(1 << 0)		// set MU reciever enabled; clear MU reciever disabled
 
