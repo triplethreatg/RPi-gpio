@@ -14,15 +14,16 @@
 
 #define BCM2708_PERI_BASE		0x20000000			// physical address value  which the peripheral register starts
 #define GPIO_BASE			(BCM2708_PERI_BASE + 0x200000)	// for GPIO controller
-#define AUX_PERI_BASE			(BCM2708_PERI_BASE + 0x215000)	// for Auxilary periferals ie UART
+#define AUX_PERI_BASE			(BCM2708_PERI_BASE + 0x205000)	// for Auxilary periferals ie UART
 
 #define BLOCK_SIZE			(4*1024)
+#define PAGE_SIZE			(4*1024)
 
 // GPIO setup macros. Always use INP_GPIO(x) to force bits to 0, before using OUT_GPIO(x)
 // "*gpio.addr + ((g))/10" is the register address that contains GPFSEL bits of the pin "g"
 #define INP_GPIO(g)			*(gpio.addr + ((g)/10)) &= ~(7<<(((g)%10)*3))
-#define OUT_GPIO(g)			*(gpio.addr + ((g/10))) |=  (1<<(((g)%10)*3))
-#define SET_GPIO_ALT(g,a)		*(gpio.addr + ((g)/10)) |= (((a)<=3?(a) + 4:(a)==4?3:2)<<(((g)%10)*3))
+#define OUT_GPIO(g)			*(gpio.addr + ((g/10))) |= (1<<(((g)%10)*3))
+#define SET_GPIO_ALT(g,a)		*(gpio.addr + (((g)/10))) |= (((a)<=3?(a) + 4:(a)==4?3:2)<<(((g)%10)*3))
 
 #define GPIO_SET 			*(gpio.addr + 7)	// sets bits which are 1 ignores bits which are 0
 #define GPIO_CLR			*(gpio.addr + 10)	// clears bits which are 1 ignores bits which are 0
@@ -46,13 +47,15 @@
 
 #define AUX_IRQ_MU			(1 << 0)		// if set MU has interrupt pending
 #define AUX_ENABLES_MU			(1 << 0)		// if set MU enabled; if clear MU is disabled
-#define AUX_MU_IIR_REG_RXD		(1 << 1)		// if set recieve interrupt asserted when FIFO holds 1 byte; if clear no recieve interrupt generated
-#define AUX_MU_IIR_REG_TXD		(1 << 0)		// if set transmit interrupt asserted when FIFO is empty; if clear no interrupt generated
-#define AUX_MU_IER_REG_ID		(1 << 1)		// 2 bit interrupt R/W (pg. 13)
-#define AUX_MU_IER_REG_IP		(1 << 0)		// clear when interrupt is pending
+#define AUX_MU_IER_REG_RXD		(1 << 0)		// if set recieve interrupt asserted when FIFO holds 1 byte; if clear no recieve interrupt generated
+#define AUX_MU_IER_REG_TXD		(1 << 1)		// if set transmit interrupt asserted when FIFO is empty; if clear no interrupt generated
+#define AUX_MU_IIR_REG_FIFO		(3 << 6)		// FIFO enables; always 11
+#define AUX_MU_IIR_REG_ID		(3 << 1)		// 2 bit interrupt R/W (pg. 13)
+#define AUX_MU_IIR_REG_IP		(1 << 0)		// clear when interrupt is pending
 #define AUX_MU_LCR_REG_DS		(1 << 0)		// clear UART 7-bit mode; set UART 8-bit mode
-#define AUX_MU_LCR_REG_BK		(1 << 7)		// DLAB access
+#define AUX_MU_LCR_REG_BK		(1 << 7)		// DLAB access; set Mini UART register access the Baudrate register; must be cleared for operation
 #define AUX_MU_LCR_REG_LAB		(1 << 6)		// Pull TX line low
+#define AUX_MU_LCR_REG_DSZ		(1 << 0)		// DATA size clear UART 7-bit mode; set UART 8-bit mode
 #define AUX_MU_MCR_REG_RTS		(1 << 1)		// clear UART1_RTS1 line high; set UART1_RTS line low
 #define AUX_MU_LSR_REG_EMT		(1 << 5)		// set if transmit FIFO can accept one byte
 #define AUX_MU_LSR_REG_DR		(1 << 0)		// set if recieve FIFO holds symbol
@@ -77,7 +80,7 @@ void unmap_peripheral(struct bcm2835_peripheral *p);
 //struct bcm2835_peripheral gpio = {GPIO_BASE};
 //struct bcm2835_peripheral auxp = {AUX_PERI_BASE};
 
-extern struct bcm2835_peripheral gpio;
-extern struct bcm2835_peripheral auxp;
+//extern struct bcm2835_peripheral gpio;
+//extern struct bcm2835_peripheral auxp;
 
 #endif
